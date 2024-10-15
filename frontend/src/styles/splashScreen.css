@@ -1,0 +1,20 @@
+.splash-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #4CAF50;  /* Example color */
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+.splash-screen h1 {
+    font-size: 3rem;
+}
+
+.splash-screen p {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
