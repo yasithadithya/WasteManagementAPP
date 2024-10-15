@@ -1,9 +1,7 @@
 const express = require('express');
-const managerController = require('../../../controllers/managerController');
-
 const router = express.Router();
+const managerController = require('../../controllers/users/managerController'); // Adjust the path as necessary
 
-// Route to create a new manager
 router.post('/create', managerController.createManager);
 
 // Route to get all managers

@@ -1,4 +1,4 @@
-const WasteBinTransaction = require('../../models/WasteBinTransaction');
+const WasteBinTransaction = require('../../models/WasteBin/wasteTransaction');
 
 // Get all waste bin transactions
 exports.getAllTransactions = async (req, res) => {

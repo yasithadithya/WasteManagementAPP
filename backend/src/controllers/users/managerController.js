@@ -1,4 +1,4 @@
-const Manager = require('../../models/manager');
+const Manager = require('../../models/users/manager');
 const crypto = require('crypto');
 
 // Generate a random username
@@ -6,7 +6,7 @@ const generateRandomUsername = () => {
     return 'MAN' + crypto.randomInt(100, 999);
 };
 // Create a new manager
-const createManager = async (req, res) => {
+exports.createManager = async (req, res) => {
     try {
         const { firstName, lastName, email, phoneNumber, password } = req.body;
 
@@ -35,7 +35,7 @@ const createManager = async (req, res) => {
 };
 
 // Get all managers
-const getAllManagers = async (req, res) => {
+exports.getAllManagers = async (req, res) => {
     try {
         const managers = await Manager.find();
         res.status(200).json(managers);
@@ -45,7 +45,7 @@ const getAllManagers = async (req, res) => {
 };
 
 // Get one manager by ID
-const getManagerById = async (req, res) => {
+exports.getManagerById = async (req, res) => {
     try {
         const manager = await Manager.findById(req.params.id);
         if (!manager) {
@@ -58,7 +58,7 @@ const getManagerById = async (req, res) => {
 };
 
 // Delete a manager by ID
-const deleteManagerById = async (req, res) => {
+exports.deleteManagerById = async (req, res) => {
     try {
         const manager = await Manager.findByIdAndDelete(req.params.id);
         if (!manager) {
@@ -71,7 +71,7 @@ const deleteManagerById = async (req, res) => {
 };
 
 // Update a manager by ID
-const updateManagerById = async (req, res) => {
+exports.updateManagerById = async (req, res) => {
     try {
         const updatedManager = await Manager.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedManager) {
@@ -83,7 +83,7 @@ const updateManagerById = async (req, res) => {
     }
 };
 // Manager login
-const loginManager = async (req, res) => {
+exports.loginManager = async (req, res) => {
     try {
         const { username, password } = req.body;
         const manager = await Manager.findOne({ username });
@@ -99,10 +99,10 @@ const loginManager = async (req, res) => {
 };
 
 
-module.exports = {
-    getAllManagers,
-    getManagerById,
-    deleteManagerById,
-    updateManagerById,
-    loginManager
-};
+// module.exports = {
+//     getAllManagers,
+//     getManagerById,
+//     deleteManagerById,
+//     updateManagerById,
+//     loginManager
+// };

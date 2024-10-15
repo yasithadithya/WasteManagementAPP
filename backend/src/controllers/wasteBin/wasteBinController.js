@@ -1,4 +1,4 @@
-const WasteBin = require('../../models/WasteBin/wasteBin');
+const WasteBin = require('../../models/WasteBin/WasteBin');
 
 // Helper function to generate unique bin ID (BIN + 4 digit random number)
 const generateBinID = () => {
