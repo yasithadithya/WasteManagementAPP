@@ -10,7 +10,7 @@ const residentRouter = require('../routes/user/resident');
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 //Waste Bin routes
 app.use('/api/wastebin', wasteBinRouter);

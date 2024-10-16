@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBCard,
-  MDBCardBody,
-  MDBInput,
-  MDBIcon,
-} from 'mdb-react-ui-kit';
+import { Link, useNavigate } from 'react-router-dom';
 
-const ManagerLogin = () => {
+//import ImageLight from '../assets/img/login-office.jpeg';
+//import ImageDark from '../assets/img/login-office-dark.jpeg';
+//import { GithubIcon, TwitterIcon } from '../icons';
+import { Label, Input, Button } from '@windmill/react-ui';
+
+function ManagerLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -41,78 +36,91 @@ const ManagerLogin = () => {
   };
 
   return (
-    <MDBContainer fluid>
-      <MDBRow className='d-flex justify-content-center align-items-center h-100'>
-        <MDBCol col='12'>
-          <MDBCard className='bg-dark text-white my-5 mx-auto' style={{ borderRadius: '1rem', maxWidth: '400px' }}>
-            <MDBCardBody className='p-5 d-flex flex-column align-items-center mx-auto w-100'>
-              <h2 className='fw-bold mb-2 text-uppercase'>Login</h2>
-              <p className='text-white-50 mb-5'>Please enter your login and password!</p>
+    <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+      <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
+        <div className="flex flex-col overflow-y-auto md:flex-row">
+          {/* <div className="h-32 md:h-auto md:w-1/2">
+            <img
+              aria-hidden="true"
+              className="object-cover w-full h-full dark:hidden"
+              src={ImageLight}
+              alt="Office"
+            />
+            <img
+              aria-hidden="true"
+              className="hidden object-cover w-full h-full dark:block"
+              src={ImageDark}
+              alt="Office"
+            />
+          </div> */}
+          <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+            <div className="w-full">
+              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
+              <form onSubmit={handleLogin}>
+                <Label>
+                  <span>User Name</span>
+                  <Input
+                    className="mt-1"
+                    type="text"
+                    placeholder="Enter your User Name"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </Label>
 
-              <form onSubmit={handleLogin} style={{ width: '100%' }}>
-                <MDBInput
-                  wrapperClass='mb-4 mx-5 w-100'
-                  labelClass='text-white'
-                  label='User Name'
-                  id='formControlLg'
-                  type='text'
-                  size='lg'
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-                <MDBInput
-                  wrapperClass='mb-4 mx-5 w-100'
-                  labelClass='text-white'
-                  label='Password'
-                  id='formControlLg'
-                  type='password'
-                  size='lg'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <Label className="mt-4">
+                  <span>Password</span>
+                  <Input
+                    className="mt-1"
+                    type="password"
+                    placeholder="***************"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Label>
 
-                {error && <p style={{ color: 'red' }}>{error}</p>}
+                {error && <p className="mt-2 text-red-600">{error}</p>}
 
-                <p className='small mb-3 pb-lg-2'>
-                  <a className='text-white-50' href='#!'>
-                    Forgot password?
-                  </a>
-                </p>
-                <MDBBtn outline className='mx-2 px-5' color='white' size='lg' type='submit'>
-                  Login
-                </MDBBtn>
+                <Button className="mt-4" block type="submit">
+                  Log in
+                </Button>
               </form>
 
-              <div className='d-flex flex-row mt-3 mb-5'>
-                <MDBBtn tag='a' color='none' className='m-3' style={{ color: 'white' }}>
-                  <MDBIcon fab icon='facebook-f' size='lg' />
-                </MDBBtn>
+              <hr className="my-8" />
 
-                <MDBBtn tag='a' color='none' className='m-3' style={{ color: 'white' }}>
-                  <MDBIcon fab icon='twitter' size='lg' />
-                </MDBBtn>
+              {/* <Button block layout="outline">
+                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                Github
+              </Button>
+              <Button className="mt-4" block layout="outline">
+                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                Twitter
+              </Button> */}
 
-                <MDBBtn tag='a' color='none' className='m-3' style={{ color: 'white' }}>
-                  <MDBIcon fab icon='google' size='lg' />
-                </MDBBtn>
-              </div>
-
-              <div>
-                <p className='mb-0'>
-                  Don&apos;t have an account?{' '}
-                  <a href='#!' className='text-white-50 fw-bold'>
-                    Sign Up
-                  </a>
-                </p>
-              </div>
-            </MDBCardBody>
-          </MDBCard>
-        </MDBCol>
-      </MDBRow>
-    </MDBContainer>
+              <p className="mt-4">
+                <Link
+                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  to="/forgot-password"
+                >
+                  Forgot your password?
+                </Link>
+              </p>
+              <p className="mt-1">
+                <Link
+                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  to="/create-account"
+                >
+                  Create account
+                </Link>
+              </p>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
 export default ManagerLogin;

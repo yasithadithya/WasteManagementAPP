@@ -72,18 +72,19 @@ exports.loginResident = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-// exports.loginResident = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         const resident = await Resident.findOne({ email });
-//         if (!resident) return res.status(404).json({ message: 'Resident not found' });
 
-//         const isMatch = await bcrypt.compare(password, resident.password);
-//         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
-
-//         const token = jwt.sign({ id: resident._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//         res.status(200).json({ token });
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+// Get the total number of residents
+exports.getResidentCount = async (req, res) => {
+    try {
+        // Get the count of resident documents in the database
+        const count = await Resident.countDocuments();
+        res.status(200).json({ count });
+    } catch (error) {
+        // Handle any errors
+        res.status(500).json({
+            status: 'error',
+            message: 'Error fetching resident count',
+            error: error.message,
+        });
+    }
+};

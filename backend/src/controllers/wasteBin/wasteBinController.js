@@ -100,3 +100,14 @@ exports.updateBinMaxCapacity = async (req, res) => {
         res.status(500).json({ message: 'Error updating max capacity', error });
     }
 };
+
+exports.getWasteBinCount = async (req, res) => {
+    try {
+        // Count the total number of waste bins
+        
+        const totalWasteBins = await WasteBin.countDocuments();
+        res.status(200).json({ totalWasteBins });
+    } catch (err) {
+        res.status(500).json({ message: 'Error counting waste bins', error: err });
+    }
+};
