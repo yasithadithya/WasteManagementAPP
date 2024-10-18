@@ -13,7 +13,7 @@ const SplashScreen = () => {
         navigate('/resident');
         break;
       case 'driver':
-        navigate('/driver');
+        navigate('/employee');
         break;
       default:
         break;

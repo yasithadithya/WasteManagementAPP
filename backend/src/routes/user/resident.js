@@ -8,7 +8,12 @@ router.get('/count', residentController.getResidentCount);
 router.get('/', residentController.getAllResidents);
 
 // Get a single resident by ID
+//router.get('/:id', residentController.getResidentByObjectId);
+
+// Get a single resident by ID
 router.get('/:username', residentController.getResidentById);
+
+
 
 // Create a new resident
 router.post('/', residentController.createResident);

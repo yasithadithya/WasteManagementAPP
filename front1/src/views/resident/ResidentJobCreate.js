@@ -29,7 +29,7 @@ const ResidentJobCreate = () => {
       const fetchJobs = async () => {
         try {
           const response = await axios.get(`http://localhost:2025/api/job/`);
-          const residentJobs = response.data.jobs.filter(job => job.resident === resident._id);
+          const residentJobs = response.data.jobs.filter(job => job.resident === resident.username);
           setJobs(residentJobs);
         } catch (error) {
           console.error('Error fetching jobs:', error);
@@ -60,7 +60,7 @@ const ResidentJobCreate = () => {
     }
     try {
       const newJob = {
-        resident: resident._id,
+        resident: resident.username,
         date: selectedDate,
         status: 'Incomplete',
       };
