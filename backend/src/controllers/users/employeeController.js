@@ -1,26 +1,31 @@
 const Employee = require('../../models/users/employee');
-const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
+
+// Generate a random username
+const generateRandomUsername = () => {
+    return 'EMP' + crypto.randomInt(100, 999);
+};
 // Add a new employee
 exports.addEmployee = async (req, res) => {
     try {
-        const { firstName, lastName, email, username, password, phoneNumber } = req.body;
+        const { firstName, lastName, email, password, phoneNumber } = req.body;
 
-        // Hash the password 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const username = generateRandomUsername();
+
 
         const newEmployee = new Employee({
             firstName,
             lastName,
             email,
             username,
-            password: hashedPassword,
+            password,
             phoneNumber
         });
 
         await newEmployee.save();
-        res.status(201).json({ message: 'Employee added successfully' });
+        res.status(201).json({ message: 'Employee added successfully', data: newEmployee });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -72,19 +77,11 @@ exports.loginEmployee = async (req, res) => {
 
         const employee = await Employee.findOne({ username });
 
-        if (!employee) {
-            return res.status(404).json({ message: 'Employee not found' });
+        if (!employee || employee.password !== password) {
+            return res.status(404).json({ message: 'Invalid Username or Password' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, employee.password);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-
-        const token = jwt.sign({ id: employee._id }, 'your_jwt_secret', { expiresIn: '1h' });
-
-        res.status(200).json({ token });
+        res.status(200).json({ message: 'Login successful', data: employee });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -100,3 +97,34 @@ exports.getAllEmployees = async (req, res) => {
     }
 };
 
+// Get an employee by id
+exports.getEmployeeById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const employee = await Employee.findById(id);
+
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        res.status(200).json(employee);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Get an employee by username
+exports.getEmployeeByUsername = async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        const employee = await Employee.findOne({ username });
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        res.status(200).json(employee);
+    }catch (error) {     
+        res.status(500).json({ error: error.message });
+    }
+};

@@ -34,7 +34,7 @@ function Footer({ role }) {
           navigate(`/${role}/home`);  // Home URL changes based on role
           break;
         case 1:
-          navigate(`/${role}/calendar`);  // Calendar or any other section
+          navigate(`/${role}/job`);  // Calendar or any other section
           break;
         case 2:
           navigate(`/${role}/report`);  // Reports or similar feature
@@ -61,7 +61,7 @@ function Footer({ role }) {
         }}
       >
         <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-        <BottomNavigationAction label="Calendar" icon={<CalendarTodayIcon />} />
+        <BottomNavigationAction label="Job" icon={<CalendarTodayIcon />} />
         <BottomNavigationAction label="Report" icon={<BarChartIcon />} />
         <BottomNavigationAction label="Profile" icon={<AccountCircleIcon />} />
       </BottomNavigation>

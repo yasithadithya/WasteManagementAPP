@@ -55,10 +55,10 @@ const residentSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    wastebin: {
+    wastebins: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'WasteBin',
-    },
+    }],
     accountNumber: {
         type: String,
         //required: true,

@@ -66,7 +66,7 @@ const UserProfile = () => {
   // Logout function to remove user data from localStorage and redirect to login
   const handleLogout = () => {
     localStorage.removeItem('manager'); // Remove the manager data from local storage
-    navigate('/'); // Redirect to login page
+    navigate('/manager'); // Redirect to login page
   };
 
   return (

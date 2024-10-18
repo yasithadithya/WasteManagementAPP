@@ -2,29 +2,48 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast components
+import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
 
 function CreateAccount() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // Add confirm password state
   const [email, setEmail] = useState('');
+  const [name, setName] = useState(''); // Add name state
+  const [contactNumber, setContactNumber] = useState(''); // Add contact number state
+  const [address, setAddress] = useState(''); // Add address state
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
+
+    // Validate password and confirm password match
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
 
     try {
       // Call the backend to create a new resident account
-      const response = await axios.post('http://localhost:2025/api/resident', { username, password, email });
-      setSuccess('Account created successfully! Please login.');
+      const response = await axios.post('http://localhost:2025/api/resident', { 
+        username, 
+        password, 
+        email, 
+        name, 
+        contactNumber, 
+        address // Include the new required fields
+      });
       console.log('Resident account created successfully:', response.data);
 
-      // Redirect to login page after successful account creation
+      // Show success toast notification
+      toast.success('Account created successfully! Please login.');
+
+      // Redirect to login page after a short delay
       setTimeout(() => {
-        navigate('/resident/login');
+        navigate('/resident/');
       }, 2000);
     } catch (err) {
       // Handle backend error responses such as username or email already exists
@@ -58,6 +77,33 @@ function CreateAccount() {
           <TextField
             margin="normal"
             fullWidth
+            label="Full Name"
+            variant="outlined"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Contact Number"
+            variant="outlined"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+            required
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Address"
+            variant="outlined"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+          <TextField
+            margin="normal"
+            fullWidth
             label="User Name"
             variant="outlined"
             value={username}
@@ -83,15 +129,20 @@ function CreateAccount() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Confirm Password"
+            variant="outlined"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
 
           {error && (
             <Typography color="error" variant="body2">
               {error}
-            </Typography>
-          )}
-          {success && (
-            <Typography color="success" variant="body2">
-              {success}
             </Typography>
           )}
 
@@ -105,6 +156,9 @@ function CreateAccount() {
           </Button>
         </form>
       </Box>
+
+      {/* Toast Container to display toast notifications */}
+      <ToastContainer position="top-center" />
     </Container>
   );
 }

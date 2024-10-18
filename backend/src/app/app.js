@@ -4,6 +4,8 @@ const {globalErrHandler, notFoundErr,} = require('../middleware/globalErrHandler
 const wasteBinRouter = require('../routes/wastebin/wastebin');
 const managerRouter = require('../routes/user/manager');
 const residentRouter = require('../routes/user/resident'); 
+const jobRouter = require('../routes/jobs/jobs');
+const empRouter = require('../routes/user/employee');
 
 
 
@@ -20,6 +22,12 @@ app.use('/api/resident', residentRouter);
 
 //Manager routes
 app.use('/api/manager', managerRouter);
+
+//Job routes
+app.use('/api/job', jobRouter);
+
+//Employee routes
+app.use('/api/employee', empRouter);
 //Error handling
 app.use(notFoundErr);
 app.use(globalErrHandler);
