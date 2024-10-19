@@ -6,7 +6,7 @@ const managerRouter = require('../routes/user/manager');
 const residentRouter = require('../routes/user/resident'); 
 const jobRouter = require('../routes/jobs/jobs');
 const empRouter = require('../routes/user/employee');
-
+const transaction = require('../routes/wastebin/wastebinTransaction');
 
 
 const app = express();
@@ -28,6 +28,9 @@ app.use('/api/job', jobRouter);
 
 //Employee routes
 app.use('/api/employee', empRouter);
+
+//Transaction routes
+app.use('/api/transaction', transaction);
 //Error handling
 app.use(notFoundErr);
 app.use(globalErrHandler);

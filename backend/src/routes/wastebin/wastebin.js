@@ -8,7 +8,8 @@ const {
     getWasteBinCount,
     assignWasteBinToResident,
     getWasteBinsByResident,
-    searchAvailableWasteBins
+    searchAvailableWasteBins,
+    updateBinWeight
 } = require('../../controllers/wasteBin/wasteBinController');
 
 const wasteBinRouter = express.Router();
@@ -27,8 +28,13 @@ wasteBinRouter.post('/assignOwner',(req,res,next)=>{
     console.log("route hit");
     next();
 }, assignWasteBinToResident);
-wasteBinRouter.put('/:binID', updateBinMaxCapacity);
+//wasteBinRouter.put('/:binID', updateBinMaxCapacity);
+wasteBinRouter.put('/weight/:binID', (req,res,next)=>{
+    console.log("route hit");
+    next();
+},updateBinWeight);
 wasteBinRouter.delete('/:binID', deleteWasteBin);
+//wasteBinRouter.patch('/updateWeight/', updateBinWeight);
 
 
 

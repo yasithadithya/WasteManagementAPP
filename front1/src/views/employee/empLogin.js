@@ -18,7 +18,7 @@ const EmployeeLogin = () => {
       localStorage.setItem('employee', JSON.stringify(response.data.data));
 
       // Navigate to Employee Home page or dashboard
-      navigate('/employee-dashboard');
+      navigate('/employee/home');
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message);

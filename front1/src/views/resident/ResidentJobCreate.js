@@ -61,6 +61,7 @@ const ResidentJobCreate = () => {
     try {
       const newJob = {
         resident: resident.username,
+        residentID: resident._id,
         date: selectedDate,
         status: 'Incomplete',
       };

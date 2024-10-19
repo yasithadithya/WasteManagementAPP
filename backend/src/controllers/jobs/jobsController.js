@@ -4,10 +4,11 @@ const Job = require('../../models/jobs/job');
 // Create a new job
 exports.createJob = async (req, res) => {
     try {
-        const { resident, date, employee, status } = req.body;
+        const { resident,residentID, date, employee, status } = req.body;
 
         const job = await Job.create({
             resident,
+            residentID,
             date,
             employee,
             status

@@ -16,6 +16,7 @@ import ResidentProfile from '../views/resident/ResidentProfile';
 import ResidentJobCreate from '../views/resident/ResidentJobCreate';
 //Emp Components
 import EmpLogin from '../views/employee/empLogin';
+import EmpHome from '../views/employee/empHome';
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
         <Route path="/resident/job" element={<ResidentJobCreate />} />
 
         <Route path="/employee" element={<EmpLogin />} />
+        <Route path="/employee/home" element={<EmpHome />} />
       
         {/* Add more routes for residents and drivers */}
       </Routes>

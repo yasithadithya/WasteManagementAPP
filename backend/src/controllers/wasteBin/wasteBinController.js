@@ -1,4 +1,5 @@
 const WasteBin = require('../../models/WasteBin/WasteBin');
+const wasteTransaction = require('../../models/WasteBin/wasteTransaction');
 const Resident = require('../../models/users/resident');
 
 // Helper function to generate unique bin ID (BIN + 4 digit random number)
@@ -175,5 +176,36 @@ exports.searchAvailableWasteBins = async (req, res) => {
         res.status(200).json({ availableWasteBins });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching available waste bins', error });
+    }
+};
+
+exports.updateBinWeight = async (req, res) => {
+    try {
+        const { binID } = req.params;  // Get the binID from the request parameters
+        const { newWeight } = req.body;  // Get the binID and newWeight from the request
+
+        // Find the waste bin by its unique bin ID
+        const wasteBin = await WasteBin.findOne({ binID });
+        if (!wasteBin) {
+            return res.status(404).json({ message: 'Waste bin not found' });
+        }
+
+        // Record the transaction in the WasteTransaction model
+       await wasteTransaction.create({
+            binId: wasteBin._id,
+            currentWeight: newWeight,  // Store the new weight
+        });
+
+        // Save the updated weight in the waste bin
+        wasteBin.currentWeight = newWeight;
+        await wasteBin.save();
+
+        res.status(200).json({
+            message: 'Waste bin weight updated and transaction recorded successfully',
+            wasteTransaction,
+        });
+    } catch (err) {
+        console.error("Error updating waste bin weight", err);
+        res.status(500).json({ message: 'Error updating waste bin weight', error: err });
     }
 };
