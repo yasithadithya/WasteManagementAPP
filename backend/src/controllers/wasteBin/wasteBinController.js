@@ -193,6 +193,8 @@ exports.updateBinWeight = async (req, res) => {
         // Record the transaction in the WasteTransaction model
        await wasteTransaction.create({
             binId: wasteBin._id,
+            binOwner: wasteBin.owner,
+            binType: wasteBin.binType,
             currentWeight: newWeight,  // Store the new weight
         });
 

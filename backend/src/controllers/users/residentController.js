@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 // Get all residents
 exports.getAllResidents = async (req, res) => {
     try {
-        const residents = await Resident.find();
+        const residents = await Resident.find().populate('wastebins'); 
+        //const residents = await Resident.find();
         res.status(200).json(residents);
     } catch (error) {
         res.status(500).json({ message: error.message });

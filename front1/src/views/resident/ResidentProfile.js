@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Card, CardContent, Typography, Avatar, Grid, Button, TextField, IconButton, Box, Divider } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 const ResidentProfile = () => {
   const navigate = useNavigate();
 
-  // Dummy resident data (replace with API call data)
+  // Get resident data from localStorage (replace with API call as needed)
   const residentData = localStorage.getItem('resident');
   let resident = null;
   try {
@@ -56,7 +57,6 @@ const ResidentProfile = () => {
 
   // Handle Password Change
   const handlePasswordChangeClick = () => {
-    // Make an API call to change the password
     if (passwordData.newPassword !== '') {
       toast.success('Password changed successfully!');
       setPasswordData({ oldPassword: '', newPassword: '' });
@@ -67,7 +67,7 @@ const ResidentProfile = () => {
 
   // Handle Logout
   const handleLogout = () => {
-    localStorage.removeItem('resident'); // Remove resident data from localStorage
+    localStorage.removeItem('resident');
     toast.success('Logged out successfully!');
     navigate('/resident'); // Redirect to login page
   };
@@ -78,22 +78,35 @@ const ResidentProfile = () => {
       <Container sx={{ mt: 4 }}>
         <Grid container justifyContent="center">
           <Grid item xs={12} sm={8} md={6}>
-            <Card elevation={4} sx={{ p: 3, borderRadius: '16px', backgroundColor: '#f5f5f5' }}>
+            <Card
+              elevation={6}
+              sx={{
+                p: 3,
+                borderRadius: '16px',
+                backgroundColor: '#ffffff',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              }}
+            >
               <Grid container justifyContent="center" sx={{ mb: 3 }}>
                 <Avatar sx={{ width: 100, height: 100, bgcolor: '#1976d2', fontSize: 36 }}>
                   {profileData.name.charAt(0)}
                 </Avatar>
               </Grid>
               <CardContent>
-                <Typography variant="h4" align="center" gutterBottom>
+                <Typography
+                  variant="h4"
+                  align="center"
+                  gutterBottom
+                  sx={{ color: '#333', fontWeight: 600, fontSize: '1.8rem' }}
+                >
                   {profileData.name}
                 </Typography>
 
                 {/* Profile Info */}
                 <Grid container spacing={2} sx={{ mt: 2 }}>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom>
-                      <strong>Email:</strong>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                      <strong>Email:</strong>{' '}
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -103,14 +116,14 @@ const ResidentProfile = () => {
                           variant="outlined"
                         />
                       ) : (
-                        <span style={{ marginLeft: '8px' }}>{profileData.email}</span>
+                        <span>{profileData.email}</span>
                       )}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom>
-                      <strong>Contact:</strong>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                      <strong>Contact:</strong>{' '}
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -120,14 +133,14 @@ const ResidentProfile = () => {
                           variant="outlined"
                         />
                       ) : (
-                        <span style={{ marginLeft: '8px' }}>{profileData.contactNumber}</span>
+                        <span>{profileData.contactNumber}</span>
                       )}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom>
-                      <strong>Address:</strong>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                      <strong>Address:</strong>{' '}
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -137,7 +150,7 @@ const ResidentProfile = () => {
                           variant="outlined"
                         />
                       ) : (
-                        <span style={{ marginLeft: '8px' }}>{profileData.address}</span>
+                        <span>{profileData.address}</span>
                       )}
                     </Typography>
                   </Grid>
@@ -145,13 +158,13 @@ const ResidentProfile = () => {
 
                 {/* Account Details */}
                 <Divider sx={{ my: 3 }} />
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" gutterBottom sx={{ color: '#1976d2', fontWeight: 600 }}>
                   Account Details
                 </Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom>
-                      <strong>Account Number:</strong>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                      <strong>Account Number:</strong>{' '}
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -161,13 +174,13 @@ const ResidentProfile = () => {
                           variant="outlined"
                         />
                       ) : (
-                        <span style={{ marginLeft: '8px' }}>{profileData.accountNumber}</span>
+                        <span>{profileData.accountNumber}</span>
                       )}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom>
-                      <strong>Bank:</strong>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                      <strong>Bank:</strong>{' '}
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -177,13 +190,13 @@ const ResidentProfile = () => {
                           variant="outlined"
                         />
                       ) : (
-                        <span style={{ marginLeft: '8px' }}>{profileData.bank}</span>
+                        <span>{profileData.bank}</span>
                       )}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom>
-                      <strong>Branch:</strong>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                      <strong>Branch:</strong>{' '}
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -193,7 +206,7 @@ const ResidentProfile = () => {
                           variant="outlined"
                         />
                       ) : (
-                        <span style={{ marginLeft: '8px' }}>{profileData.branch}</span>
+                        <span>{profileData.branch}</span>
                       )}
                     </Typography>
                   </Grid>
@@ -201,7 +214,7 @@ const ResidentProfile = () => {
 
                 {/* Password Change */}
                 <Divider sx={{ my: 3 }} />
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" gutterBottom sx={{ color: '#1976d2', fontWeight: 600 }}>
                   Change Password
                 </Typography>
                 <TextField
@@ -228,7 +241,7 @@ const ResidentProfile = () => {
                   variant="contained"
                   color="secondary"
                   onClick={handlePasswordChangeClick}
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 2, width: '100%' }}
                 >
                   Change Password
                 </Button>
@@ -257,7 +270,9 @@ const ResidentProfile = () => {
                   <Button
                     variant="contained"
                     color="error"
+                    startIcon={<LogoutIcon />}
                     onClick={handleLogout}
+                    sx={{ width: '100%' }}
                   >
                     Logout
                   </Button>

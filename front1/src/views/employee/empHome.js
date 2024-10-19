@@ -54,9 +54,23 @@ const EmployeeHome = () => {
   // Handle job completion (mark as "Complete")
   const handleCompleteCollection = async () => {
     try {
+      // 1. Update job status to "Complete"
       await axios.put(`http://localhost:2025/api/job/${selectedJob._id}`, { status: 'Complete' });
+
+      // 2. Reset current weight of all waste bins to zero
+      const updatedBins = wasteBins.map(async (bin) => {
+        return await axios.put(`http://localhost:2025/api/wastebin/weight/${bin.binID}/`, { newWeight: 0 });
+      });
+
+      // Wait for all waste bins to be updated
+      await Promise.all(updatedBins);
+
       toast.success('Collection completed successfully!');
+
+      // 3. Remove the job from the list
       setJobs(jobs.filter(job => job._id !== selectedJob._id));
+
+      // 4. Close the dialog
       setOpenDialog(false);
     } catch (error) {
       console.error('Error completing collection:', error);
