@@ -257,7 +257,7 @@ const ResidentHome = () => {
             </Box>
           </Grid>
         </Grid>
-      </Container>
+      </Container> <br/><br/><br/><br/><br/>
 
       {/* Dialog for Adding New Waste Bin */}
       <Dialog open={open} onClose={handleClose}>
