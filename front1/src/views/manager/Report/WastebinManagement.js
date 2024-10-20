@@ -53,6 +53,7 @@ const WastebinManagement = () => {
                 <TableCell>Type</TableCell>
                 <TableCell>Current Weight (kg)</TableCell>
                 <TableCell>Max Weight (kg)</TableCell>
+                <TableCell>Owner</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -63,6 +64,7 @@ const WastebinManagement = () => {
                   <TableCell>{bin.binType}</TableCell>
                   <TableCell>{bin.currentWeight}</TableCell>
                   <TableCell>{bin.maxWeight}</TableCell>
+                  <TableCell>{bin.owner}</TableCell>
                   <TableCell>
                     <Button variant="contained" color="secondary" onClick={() => handleDeleteWastebin(bin.binID)}>
                       Delete

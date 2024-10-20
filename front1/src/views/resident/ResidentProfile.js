@@ -312,8 +312,7 @@ const ResidentProfile = () => {
 
         {/* Toast Notification Container */}
         <ToastContainer />
-      </Container>       <br/><br/><br/><br/><br/>
-
+      </Container>
       <Footer role="resident" />
     </div>
   );
