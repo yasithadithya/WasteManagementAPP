@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, Container, Box, TextField, Button, Grid, IconButton } from '@mui/material';
+import { Container, Box, Typography, Grid, Avatar, Button, IconButton, TextField, Divider } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Header, Footer } from '../../components/header'; // Assuming Header/Footer are shared
-import axios from 'axios'; // Assuming you're using axios for API requests
+import { Header, Footer } from '../../components/header'; 
+import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
+import 'react-toastify/dist/ReactToastify.css';
 
 const UserProfile = () => {
-  // Extract the manager (user) data from localStorage
-  const manager = JSON.parse(localStorage.getItem('manager')); 
-
+  const manager = JSON.parse(localStorage.getItem('manager'));
+  
   const [formData, setFormData] = useState({
     firstName: manager.firstName,
     lastName: manager.lastName,
@@ -19,16 +20,13 @@ const UserProfile = () => {
     phoneNumber: manager.phoneNumber,
     password: '',
   });
-
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [isEditing, setIsEditing] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
 
   // Update the time every second
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -40,133 +38,159 @@ const UserProfile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
+  const handleEditClick = () => setIsEditing(true);
 
-  // Save changes to the user's profile
   const handleSaveClick = async () => {
     try {
-      // Make a PUT request to update the user's details using the backend's `/api/manager/:id` route
       const response = await axios.put(`http://localhost:2025/api/manager/${manager._id}`, formData);
       if (response.status === 200) {
-        // Update local storage with the new manager data
         localStorage.setItem('manager', JSON.stringify(response.data));
         setIsEditing(false);
-
-        // Show a success toast notification
         toast.success('Profile updated successfully!');
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
       toast.error('Failed to update profile. Please try again.');
     }
   };
 
-  // Logout function to remove user data from localStorage and redirect to login
   const handleLogout = () => {
-    localStorage.removeItem('manager'); // Remove the manager data from local storage
-    navigate('/manager'); // Redirect to login page
+    localStorage.removeItem('manager');
+    navigate('/manager');
   };
 
   return (
     <div>
-      {/* Header */}
       <Header />
-
-      {/* Top Bar with Date, Time, and Logout Button */}
-      <AppBar position="static" sx={{ bgcolor: 'lightgreen', p: 1 }}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
-            Profile Management
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', mr: 2 }}>
-              {formattedDate} | {formattedTime}
-            </Typography>
-            <IconButton color="inherit" onClick={handleLogout}>
-              <LogoutIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Profile Form */}
       <Container sx={{ mt: 4 }}>
-        <Box component="form" noValidate autoComplete="off" sx={{ p: 3, bgcolor: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(5px)' }}>
-          <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold' }}>Edit Profile</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+        <Grid container justifyContent="center">
+          <Grid item xs={12} sm={8} md={6}>
+            <Box
+              sx={{
+                p: 3,
+                backgroundColor: '#ffffff',
+                borderRadius: 3,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <Grid container justifyContent="center" sx={{ mb: 3 }}>
+                <Avatar
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    bgcolor: '#1976d2',
+                    fontSize: 36,
+                  }}
+                >
+                  {formData.firstName.charAt(0)}
+                </Avatar>
+              </Grid>
+
+              <Typography
+                variant="h4"
+                align="center"
+                gutterBottom
+                sx={{ fontWeight: 600, fontSize: '1.8rem', color: '#333' }}
+              >
+                {formData.firstName} {formData.lastName}
+              </Typography>
+
+              {/* Profile Info */}
+              <Divider sx={{ my: 3 }} />
+              <Typography variant="h6" gutterBottom sx={{ color: '#1976d2', fontWeight: 600 }}>
+                Profile Information
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    <strong>Email:</strong>{' '}
+                    {isEditing ? (
+                      <TextField
+                        fullWidth
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        variant="outlined"
+                      />
+                    ) : (
+                      <span>{formData.email}</span>
+                    )}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    <strong>Phone Number:</strong>{' '}
+                    {isEditing ? (
+                      <TextField
+                        fullWidth
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        variant="outlined"
+                      />
+                    ) : (
+                      <span>{formData.phoneNumber}</span>
+                    )}
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              {/* Password Change */}
+              <Divider sx={{ my: 3 }} />
+              <Typography variant="h6" gutterBottom sx={{ color: '#1976d2', fontWeight: 600 }}>
+                Change Password
+              </Typography>
               <TextField
                 fullWidth
-                label="First Name"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Last Name"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Password"
                 name="password"
+                label="New Password"
+                type="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                type="password"
+                variant="outlined"
+                sx={{ mb: 2 }}
                 disabled={!isEditing}
-                placeholder={isEditing ? 'Enter new password' : '******'}
               />
-            </Grid>
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              {isEditing ? (
-                <Button variant="contained" color="primary" onClick={handleSaveClick}>
-                  Save Changes
+
+              {/* Action Buttons */}
+              <Box display="flex" justifyContent="center" sx={{ mt: 3 }}>
+                {isEditing ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<SaveIcon />}
+                    onClick={handleSaveClick}
+                    sx={{ mr: 2 }}
+                  >
+                    Save Changes
+                  </Button>
+                ) : (
+                  <IconButton onClick={handleEditClick} color="primary">
+                    <EditIcon />
+                  </IconButton>
+                )}
+              </Box>
+
+              {/* Logout Button */}
+              <Box display="flex" justifyContent="center" sx={{ mt: 3 }}>
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<LogoutIcon />}
+                  onClick={handleLogout}
+                  sx={{ width: '100%' }}
+                >
+                  Logout
                 </Button>
-              ) : (
-                <Button variant="contained" color="primary" onClick={handleEditClick}>
-                  Edit Profile
-                </Button>
-              )}
-            </Grid>
+              </Box>
+            </Box>
           </Grid>
-        </Box>
+        </Grid>
+
+        {/* Toast Notification Container */}
+        <ToastContainer />
       </Container>
 
-      {/* Toast notification container */}
-      <ToastContainer />
-
-      {/* Footer */}
       <Footer role="manager" />
     </div>
   );

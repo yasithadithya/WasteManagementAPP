@@ -11,11 +11,11 @@ Chart.register(LineElement, CategoryScale, LinearScale, PointElement, Legend, To
 const ResidentReport = () => {
   const [transactions, setTransactions] = useState([]);
   const [types] = useState(['Organic', 'Plastic', 'Glass']); // Garbage types
-  const [selectedType, setSelectedType] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [chartData, setChartData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [selectedType, setSelectedType] = useState(''); // Selected garbage type
+  const [startDate, setStartDate] = useState(''); // Selected start date
+  const [endDate, setEndDate] = useState(''); // Selected end date
+  const [chartData, setChartData] = useState(null); // Data for the chart
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Fetch the logged-in resident ID from localStorage or session (assumed to be stored after login)
   const loggedResidentId = localStorage.getItem('residentId'); // Replace with actual logic
@@ -23,15 +23,17 @@ const ResidentReport = () => {
   // Fetch the transactions for the logged-in resident
   const fetchTransactions = async () => {
     setLoading(true);
+
     try {
-      const response = await axios.get('http://localhost:2025/api/transaction', {
+      const response = await axios.get('http://localhost:2025/api/transaction/', {
         params: {
-          residentId: loggedResidentId,
-          type: selectedType,
-          startDate,
-          endDate,
+          id: loggedResidentId,
+          binType: selectedType !== '' ? selectedType : undefined, // Only send type if selected
+          startDate: startDate !== '' ? startDate : undefined, // Only send startDate if selected
+          endDate: endDate !== '' ? endDate : undefined, // Only send endDate if selected
         },
       });
+
       setTransactions(response.data);
       setLoading(false);
     } catch (error) {

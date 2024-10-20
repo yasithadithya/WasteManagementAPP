@@ -115,25 +115,44 @@ const ResidentJobCreate = () => {
   };
 
   return (
-    <div>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
-      <Container>
-        <Typography variant="h4" align="center" gutterBottom>
-          Job Calendar
-        </Typography>
-
-        <Calendar
-          onClickDay={handleOpenDialog}
-          value={selectedDate}
-          tileContent={tileContent}
-        />
+      <Container
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 'calc(100vh - 64px)', // Full height minus header
+        }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '1200px',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Calendar
+            onClickDay={handleOpenDialog}
+            value={selectedDate}
+            tileContent={tileContent}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        </Box>
 
         {/* Job Creation/View Dialog */}
         <Dialog open={openDialog} onClose={handleCloseDialog}>
           <DialogTitle>{currentJob ? 'View Job' : 'Create Job'}</DialogTitle>
           <DialogContent>
             <Typography variant="body1" gutterBottom>
-              Selected Date: {selectedDate.toDateString()}
+              Date: {selectedDate.toDateString()}
             </Typography>
             {currentJob ? (
               <>

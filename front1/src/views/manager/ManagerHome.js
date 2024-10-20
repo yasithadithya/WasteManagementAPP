@@ -4,21 +4,21 @@ import { format } from 'date-fns';
 import { Header, Footer } from '../../components/header';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import AddIcon from '@mui/icons-material/Add'; // Plus icon for adding new waste bin
-import axios from 'axios'; // For making HTTP requests
-import { toast, ToastContainer } from 'react-toastify'; // Import react-toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import the toastify CSS
+import AddIcon from '@mui/icons-material/Add';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ManagerHome = () => {
   const manager = JSON.parse(localStorage.getItem('manager'));
   const [currentTime, setCurrentTime] = useState(new Date());
   const [residentCount, setResidentCount] = useState(0);
   const [wasteBinCount, setWasteBinCount] = useState(0);
-  const [open, setOpen] = useState(false); // For opening the dialog to create new waste bin
-  const [binType, setBinType] = useState(''); // For selecting waste bin type
-  const [maxWeight, setMaxWeight] = useState(''); // For max capacity
+  const [open, setOpen] = useState(false);
+  const [binType, setBinType] = useState('');
+  const [maxWeight, setMaxWeight] = useState('');
 
-  // Fetch the total number of residents from the backend
+  // Fetch the total number of residents
   useEffect(() => {
     const fetchResidentCount = async () => {
       try {
@@ -28,11 +28,10 @@ const ManagerHome = () => {
         console.error('Error fetching resident count:', error);
       }
     };
-
     fetchResidentCount();
   }, []);
 
-  // Fetch the total number of waste bins from the backend
+  // Fetch the total number of waste bins
   useEffect(() => {
     const fetchWasteBinCount = async () => {
       try {
@@ -42,7 +41,6 @@ const ManagerHome = () => {
         console.error('Error fetching waste bin count:', error);
       }
     };
-
     fetchWasteBinCount();
   }, []);
 
@@ -71,18 +69,18 @@ const ManagerHome = () => {
   // Handle waste bin creation
   const handleCreateWasteBin = async () => {
     if (!binType || !maxWeight) {
-      toast.error("Please fill all fields"); // Show error toast if fields are empty
+      toast.error("Please fill all fields");
       return;
     }
 
     try {
       await axios.post('http://localhost:2025/api/wasteBin', { binType, maxWeight });
-      setWasteBinCount(wasteBinCount + 1); // Update waste bin count
-      toast.success('Waste bin created successfully!'); // Show success toast
-      handleClose(); // Close the dialog after successful creation
+      setWasteBinCount(wasteBinCount + 1);
+      toast.success('Waste bin created successfully!');
+      handleClose();
     } catch (error) {
       console.error('Error creating waste bin:', error);
-      toast.error('Failed to create waste bin'); // Show error toast
+      toast.error('Failed to create waste bin');
     }
   };
 
@@ -104,7 +102,7 @@ const ManagerHome = () => {
       </AppBar>
 
       {/* Content */}
-      <Container sx={{ mt: 4 }}>
+      <Container sx={{ mt: 4, overflow: 'hidden' }}> {/* Removed scroll and adjusted overflow */}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Swiper spaceBetween={30} slidesPerView={1} pagination={{ clickable: true }}>
@@ -112,12 +110,11 @@ const ManagerHome = () => {
                 <Paper
                   elevation={3}
                   sx={{
-                    height: 150,
+                    height: 'auto', // Ensure responsive height
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'lightgreen',
-                    backdropFilter: 'blur(5px)',
+                    backgroundColor: 'white', // White background
                     padding: '20px',
                   }}
                 >
@@ -128,12 +125,11 @@ const ManagerHome = () => {
                 <Paper
                   elevation={3}
                   sx={{
-                    height: 150,
+                    height: 'auto', // Ensure responsive height
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'lightgreen',
-                    backdropFilter: 'blur(5px)',
+                    backgroundColor: 'white',
                     padding: '20px',
                   }}
                 >
@@ -147,12 +143,11 @@ const ManagerHome = () => {
                 <Paper
                   elevation={3}
                   sx={{
-                    height: 150,
+                    height: 'auto', // Ensure responsive height
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'lightgreen',
-                    backdropFilter: 'blur(5px)',
+                    backgroundColor: 'white',
                     padding: '20px',
                   }}
                 >
@@ -163,12 +158,11 @@ const ManagerHome = () => {
                 <Paper
                   elevation={3}
                   sx={{
-                    height: 150,
+                    height: 'auto', // Ensure responsive height
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'lightgreen',
-                    backdropFilter: 'blur(5px)',
+                    backgroundColor: 'white',
                     padding: '20px',
                   }}
                 >

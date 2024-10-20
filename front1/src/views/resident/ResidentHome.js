@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, Container, Box, Paper, Grid, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, Typography, Container, Box, Paper, Grid, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 import { format } from 'date-fns';
 import { Header, Footer } from '../../components/header';
-import { toast, ToastContainer } from 'react-toastify'; // Import toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import the toastify CSS
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
+//import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined'; // Black and white coin icon
 
 const ResidentHome = () => {
   const residentData = localStorage.getItem('resident');
@@ -33,7 +34,7 @@ const ResidentHome = () => {
           const wasteBinResponse = await axios.get(`http://localhost:2025/api/wastebin/${resident._id}`);
           setWasteBins(wasteBinResponse.data.wasteBins);
 
-          const pointsResponse = await axios.get(`http://localhost:2025/api/resident/${resident.username}`,);
+          const pointsResponse = await axios.get(`http://localhost:2025/api/resident/${resident.username}`);
           setTotalPoints(pointsResponse.data.totalPoints);
         } catch (error) {
           console.error('Error fetching resident data:', error);
@@ -103,12 +104,48 @@ const ResidentHome = () => {
     }
   };
 
+  const getBinColor = (binType) => {
+    switch (binType) {
+      case 'Organic': return '#4caf50';
+      case 'Plastic': return '#f44336';
+      case 'Glass': return '#2196f3';
+      default: return '#9e9e9e';
+    }
+  };
+
+  const renderGauge = (currentWeight, maxWeight, binType) => {
+    const percentage = (currentWeight / maxWeight) * 100;
+    const color = getBinColor(binType);
+
+    return (
+      <Box position="relative" display="inline-flex">
+        <CircularProgress
+          variant="determinate"
+          value={percentage}
+          size={120}
+          thickness={5}
+          sx={{ color }}
+        />
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          sx={{ transform: 'translate(-50%, -50%)', color: color }}
+        >
+          <Typography variant="caption" component="div">
+            {`${Math.round(percentage)}%`}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  };
+
   return (
-    <div>
+    <div style={{ overflowY: 'auto' }}>
       {/* Header */}
       <Header />
 
-      {/* Top Bar with Greeting, Date, and Time */}
+      {/* Greeting, Date, and Time */}
       <AppBar position="static" sx={{ bgcolor: 'white', p: 1 }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black' }}>
@@ -119,53 +156,53 @@ const ResidentHome = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+      {/* Total Points Below Header
+      <Box
+        sx={{
+          backgroundColor: '#1976d2',
+          color: 'black',
+          padding: '12px 16px',
+          borderRadius: 8,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mt: 2,
+        }}
+      >
+        <MonetizationOnOutlinedIcon sx={{ mr: 1 }} />
+        <Typography variant="h6">{totalPoints} Points</Typography>
+      </Box> */}
 
       {/* Content */}
       <Container sx={{ mt: 4 }}>
         <Grid container spacing={2}>
-          {/* Display Total Points */}
-          <Grid item xs={12}>
-            <Paper
-              elevation={3}
-              sx={{
-                height: 150,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#4caf50',
-                padding: '20px',
-                borderRadius: 2,
-                color: '#fff',
-              }}
-            >
-              <Typography variant="h4" align="center">
-                Total Points: {totalPoints}
-              </Typography>
-            </Paper>
-          </Grid>
-
           {/* Display Waste Bins */}
           <Grid item xs={12}>
             {wasteBins.length > 0 ? (
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 {wasteBins.map((bin, index) => (
                   <Grid item xs={12} sm={6} md={4} key={index}>
                     <Paper
                       elevation={3}
                       sx={{
-                        height: 150,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'lightgreen',
-                        backdropFilter: 'blur(5px)',
-                        padding: '20px',
+                        p: 3,
+                        textAlign: 'center',
+                        backgroundColor: 'white',
+                        borderRadius: 2,
+                        position: 'relative',
                       }}
                     >
-                      <Typography variant="h5">Bin ID: {bin.binID}</Typography>
-                      <Typography variant="h6">Type: {bin.binType}</Typography>
-                      <Typography variant="h6">Weight: {bin.currentWeight} kg</Typography>
-                      <Typography variant="h6">Max Capacity: {bin.maxWeight} kg</Typography>
+                      <Typography variant="h6">{bin.binID}</Typography>
+                      <Typography variant="subtitle1">{bin.binType} Waste</Typography>
+                      <Box mt={2}>
+                        {renderGauge(bin.currentWeight, bin.maxWeight, bin.binType)}
+                      </Box>
+                      <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                        Current Weight: {bin.currentWeight} kg
+                      </Typography>
+                      <Typography variant="subtitle2" sx={{ mt: 1 }}>
+                        Max Capacity: {bin.maxWeight} kg
+                      </Typography>
                     </Paper>
                   </Grid>
                 ))}
@@ -177,7 +214,7 @@ const ResidentHome = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundColor: 'lightgray',
+                  backgroundColor: 'white',
                   borderRadius: 2,
                   textAlign: 'center',
                 }}
@@ -193,10 +230,31 @@ const ResidentHome = () => {
           </Grid>
 
           {/* Button to Add More Waste Bins */}
-          <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button variant="contained" color="primary" onClick={handleClickOpen}>
-              Add More Waste Bins
-            </Button>
+          <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 3,
+                  backgroundColor: '#f5f5f5',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  transition: '0.3s',
+                  '&:hover': {
+                    backgroundColor: '#e0e0e0',
+                  },
+                }}
+                onClick={handleClickOpen}
+              >
+                <Typography variant="h6" sx={{ mr: 2 }}>
+                  Add More Waste Bins
+                </Typography>
+                <AddIcon />
+              </Paper>
+            </Box>
           </Grid>
         </Grid>
       </Container>

@@ -4,6 +4,7 @@ import PeopleIcon from '@mui/icons-material/People'; // Resident Management Icon
 import DriveEtaIcon from '@mui/icons-material/DriveEta'; // Driver Management Icon
 import DeleteIcon from '@mui/icons-material/Delete'; // Garbage Management Icon
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'; // Waste Bin Management Icon
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'; // Total Garbage Management Icon
 import { useNavigate } from 'react-router-dom'; // For navigation
 import { Header, Footer } from '../../components/header';
 
@@ -89,10 +90,26 @@ const ManagerReportPage = () => {
               </CardActionArea>
             </Card>
           </Grid>
+
+          {/* Total Garbage Management */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardActionArea onClick={() => handleNavigate('/total-garbage')}>
+                <CardContent>
+                  <Box display="flex" flexDirection="column" alignItems="center">
+                    <RestoreFromTrashIcon sx={{ fontSize: 50, color: 'purple' }} />
+                    <Typography variant="h6" gutterBottom>
+                      Total Garbage Management
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
         </Grid>
 
         {/* Toast Notifications */}
-        <Footer role = "manager"/>
+        <Footer role="manager" />
       </Container>
     </div>
   );

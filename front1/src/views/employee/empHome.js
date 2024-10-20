@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Container, Typography, Card, CardContent, CardActions, Button, Grid, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Header, Footer } from '../../components/header';
+
+// Function to group jobs by date
+const groupJobsByDate = (jobs) => {
+  return jobs.reduce((groups, job) => {
+    const jobDate = new Date(job.date).toLocaleDateString();
+    if (!groups[jobDate]) {
+      groups[jobDate] = [];
+    }
+    groups[jobDate].push(job);
+    return groups;
+  }, {});
+};
 
 const EmployeeHome = () => {
   const employeeData = localStorage.getItem('employee');
@@ -28,7 +40,7 @@ const EmployeeHome = () => {
         try {
           const response = await axios.get(`http://localhost:2025/api/job`);
           const assignedJobs = response.data.jobs.filter(job => job.employee === employee._id && job.status !== 'Complete');
-          setJobs(assignedJobs);
+          setJobs(assignedJobs.sort((a, b) => new Date(b.date) - new Date(a.date))); // Sort jobs by date (most recent first)
         } catch (error) {
           console.error('Error fetching jobs:', error);
           toast.error('Failed to load jobs');
@@ -54,95 +66,119 @@ const EmployeeHome = () => {
   // Handle job completion (mark as "Complete")
   const handleCompleteCollection = async () => {
     try {
-      // 1. Update job status to "Complete"
+      let totalPlasticWeight = 0;
+  
+      // Calculate total plastic weight
+      wasteBins.forEach((bin) => {
+        if (bin.binType === 'Plastic') {
+          totalPlasticWeight += bin.currentWeight;
+        }
+      });
+  
+      // Calculate points to be added (10kg = 1 point)
+      const pointsToAdd = Math.floor(totalPlasticWeight / 10);
+  
+      // Update the job status to "Complete"
       await axios.put(`http://localhost:2025/api/job/${selectedJob._id}`, { status: 'Complete' });
-
-      // 2. Reset current weight of all waste bins to zero
+  
+      // Reset the current weight of all waste bins
       const updatedBins = wasteBins.map(async (bin) => {
         return await axios.put(`http://localhost:2025/api/wastebin/weight/${bin.binID}/`, { newWeight: 0 });
       });
-
-      // Wait for all waste bins to be updated
       await Promise.all(updatedBins);
-
+  
+      // Update the resident's total points if plastic was collected
+      if (pointsToAdd > 0) {
+        const residentResponse = await axios.get(`http://localhost:2025/api/resident/${selectedJob.resident}`);
+        const updatedPoints = residentResponse.data.totalPoints + pointsToAdd;
+  
+        // Update the resident's points in the backend
+        await axios.put(`http://localhost:2025/api/resident/${residentResponse.data._id}`, {
+          totalPoints: updatedPoints,
+        });
+  
+        toast.success(`${pointsToAdd} points added to resident for plastic collection!`);
+      }
+  
+      // Success message for completing the collection
       toast.success('Collection completed successfully!');
-
-      // 3. Remove the job from the list
       setJobs(jobs.filter(job => job._id !== selectedJob._id));
-
-      // 4. Close the dialog
       setOpenDialog(false);
     } catch (error) {
       console.error('Error completing collection:', error);
       toast.error('Failed to complete the collection');
     }
   };
+  
+
+  // Group jobs by date
+  const jobsByDate = groupJobsByDate(jobs);
 
   return (
     <div>
       <Header />
+
+      {/* Main Content */}
       <Container sx={{ mt: 4 }}>
         <Typography variant="h4" gutterBottom>
           Assigned Jobs
         </Typography>
 
-        {/* Job Table */}
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Job ID</TableCell>
-                <TableCell>Resident ID</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {jobs.map((job) => (
-                <TableRow key={job._id}>
-                  <TableCell>{job._id}</TableCell>
-                  <TableCell>{job.resident}</TableCell>
-                  <TableCell>{new Date(job.date).toLocaleDateString()}</TableCell>
-                  <TableCell>{job.status}</TableCell>
-                  <TableCell>
-                    <Button variant="contained" color="primary" onClick={() => handleJobClick(job)}>
-                      View Waste Bins
-                    </Button>
-                  </TableCell>
-                </TableRow>
+        {/* Display Jobs Grouped by Date */}
+        {Object.keys(jobsByDate).map((date) => (
+          <Box key={date} sx={{ mb: 4 }}>
+            {/* Date Heading */}
+            <Typography variant="h5" gutterBottom sx={{ mb: 2, fontWeight: 'bold', color: '#1976d2' }}>
+              {date}
+            </Typography>
+
+            {/* Responsive Grid for Job Cards */}
+            <Grid container spacing={2}>
+              {jobsByDate[date].map((job) => (
+                <Grid item xs={12} sm={6} md={4} key={job._id}>
+                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <CardContent>
+                      <Typography variant="h6">Job ID: {job._id}</Typography>
+                      <Typography variant="subtitle1">Resident: {job.resident}</Typography>
+                      <Typography variant="body2">
+                        Date: {new Date(job.date).toLocaleDateString()}
+                      </Typography>
+                      <Typography variant="body2">Status: {job.status}</Typography>
+                    </CardContent>
+                    <CardActions sx={{ mt: 'auto' }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={() => handleJobClick(job)}
+                      >
+                        View Waste Bins
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </Grid>
+          </Box>
+        ))}
 
         {/* Waste Bin Dialog */}
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>Waste Bins for Job {selectedJob?._id}</DialogTitle>
           <DialogContent>
             {wasteBins.length > 0 ? (
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Bin ID</TableCell>
-                      <TableCell>Bin Type</TableCell>
-                      <TableCell>Current Weight (kg)</TableCell>
-                      <TableCell>Max Weight (kg)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {wasteBins.map((bin) => (
-                      <TableRow key={bin._id}>
-                        <TableCell>{bin.binID}</TableCell>
-                        <TableCell>{bin.binType}</TableCell>
-                        <TableCell>{bin.currentWeight}</TableCell>
-                        <TableCell>{bin.maxWeight}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <Grid container spacing={2}>
+                {wasteBins.map((bin) => (
+                  <Grid item xs={12} key={bin._id}>
+                    <Box sx={{ p: 2, backgroundColor: 'lightgray', borderRadius: 1 }}>
+                      <Typography variant="body1"><strong>Bin ID:</strong> {bin.binID}</Typography>
+                      <Typography variant="body2"><strong>Type:</strong> {bin.binType}</Typography>
+                      <Typography variant="body2"><strong>Current Weight:</strong> {bin.currentWeight} kg</Typography>
+                      <Typography variant="body2"><strong>Max Weight:</strong> {bin.maxWeight} kg</Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
             ) : (
               <Typography>No waste bins found for this resident</Typography>
             )}
@@ -158,6 +194,7 @@ const EmployeeHome = () => {
         {/* Toast Notifications */}
         <ToastContainer />
       </Container>
+
       <Footer role="employee" />
     </div>
   );

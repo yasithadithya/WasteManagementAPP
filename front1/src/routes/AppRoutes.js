@@ -12,6 +12,7 @@ import ManagerReport from '../views/manager/ManagerReport';
 import ResidentManagement from '../views/manager/Report/ResidentManagement';
 import WastebinManagement from '../views/manager/Report/WastebinManagement';
 import DriverManagement from '../views/manager/Report/DriverManagement';
+import WasteBarChart from '../views/manager/Report/TotalGarbage';
 import GarbageManagement from '../views/manager/Report/GarbageManagement';
 //Resident Components
 import ResidentLogin from '../views/resident/ResidentLogin';
@@ -23,6 +24,7 @@ import ResidentReport from '../views/resident/ResidentReport';
 //Emp Components
 import EmpLogin from '../views/employee/empLogin';
 import EmpHome from '../views/employee/empHome';
+import EmpProfile from '../views/employee/empProfile';
 
 const AppRoutes = () => {
   return (
@@ -38,6 +40,7 @@ const AppRoutes = () => {
         <Route path="/wastebin-management" element={<WastebinManagement />} />
         <Route path="/driver-management" element={<DriverManagement />} />
         <Route path="/garbage-management" element={<GarbageManagement />} />
+        <Route path="/total-garbage" element={<WasteBarChart />} />
 
         <Route path="/resident" element={<ResidentLogin />} />
         <Route path="/resident/create" element={<ResidentCreate />} />
@@ -48,7 +51,7 @@ const AppRoutes = () => {
 
         <Route path="/employee" element={<EmpLogin />} />
         <Route path="/employee/home" element={<EmpHome />} />
-      
+        <Route path="/employee/profile" element={<EmpProfile />} />
         {/* Add more routes for residents and drivers */}
       </Routes>
     </Router>

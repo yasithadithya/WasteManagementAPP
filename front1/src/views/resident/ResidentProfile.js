@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Card, CardContent, Typography, Avatar, Grid, Button, TextField, IconButton, Box, Divider } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -26,6 +26,22 @@ const ResidentProfile = () => {
   const [profileData, setProfileData] = useState(resident);
   const [formData, setFormData] = useState(profileData);
   const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '' });
+  const [totalPoints, setTotalPoints] = useState(0); // State to store total points
+
+  // Fetch total points from the backend
+  useEffect(() => {
+    if (resident && resident._id) {
+      const fetchTotalPoints = async () => {
+        try {
+          const response = await axios.get(`http://localhost:2025/api/resident/${resident.username}`);
+          setTotalPoints(response.data.totalPoints);
+        } catch (error) {
+          console.error('Error fetching total points:', error);
+        }
+      };
+      fetchTotalPoints();
+    }
+  }, [resident]);
 
   // Toggle Edit Mode
   const handleEditClick = () => setIsEditing(!isEditing);
@@ -87,25 +103,37 @@ const ResidentProfile = () => {
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
               }}
             >
+              {/* Profile Avatar */}
               <Grid container justifyContent="center" sx={{ mb: 3 }}>
-                <Avatar sx={{ width: 100, height: 100, bgcolor: '#1976d2', fontSize: 36 }}>
+                <Avatar sx={{ width: 120, height: 120, bgcolor: '#1976d2', fontSize: 50 }}>
                   {profileData.name.charAt(0)}
                 </Avatar>
               </Grid>
               <CardContent>
+                {/* Profile Name */}
                 <Typography
                   variant="h4"
                   align="center"
                   gutterBottom
-                  sx={{ color: '#333', fontWeight: 600, fontSize: '1.8rem' }}
+                  sx={{ color: '#333', fontWeight: 600, fontSize: '2.2rem' }}
                 >
                   {profileData.name}
+                </Typography>
+
+                {/* Total Points */}
+                <Typography
+                  variant="h6"
+                  align="center"
+                  gutterBottom
+                  sx={{ color: '#1976d2', fontWeight: 600, mt: 2, mb: 3 }}
+                >
+                  Total Points: {totalPoints} 
                 </Typography>
 
                 {/* Profile Info */}
                 <Grid container spacing={2} sx={{ mt: 2 }}>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666', fontSize: '1rem' }}>
                       <strong>Email:</strong>{' '}
                       {isEditing ? (
                         <TextField
@@ -122,7 +150,7 @@ const ResidentProfile = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666', fontSize: '1rem' }}>
                       <strong>Contact:</strong>{' '}
                       {isEditing ? (
                         <TextField
@@ -139,7 +167,7 @@ const ResidentProfile = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666', fontSize: '1rem' }}>
                       <strong>Address:</strong>{' '}
                       {isEditing ? (
                         <TextField
@@ -163,7 +191,7 @@ const ResidentProfile = () => {
                 </Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666', fontSize: '1rem' }}>
                       <strong>Account Number:</strong>{' '}
                       {isEditing ? (
                         <TextField
@@ -179,7 +207,7 @@ const ResidentProfile = () => {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666', fontSize: '1rem' }}>
                       <strong>Bank:</strong>{' '}
                       {isEditing ? (
                         <TextField
@@ -195,7 +223,7 @@ const ResidentProfile = () => {
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1" gutterBottom sx={{ color: '#666' }}>
+                    <Typography variant="body1" gutterBottom sx={{ color: '#666', fontSize: '1rem' }}>
                       <strong>Branch:</strong>{' '}
                       {isEditing ? (
                         <TextField
