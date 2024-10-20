@@ -194,6 +194,7 @@ const EmployeeHome = () => {
         {/* Toast Notifications */}
         <ToastContainer />
       </Container>
+      <br/><br/><br/><br/><br/>
 
       <Footer role="employee" />
     </div>
