@@ -12,7 +12,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@windmill/react-ui": "^0.6.0",
-    "axios": "^1.7.7",
+    "axios": "^1.13.5",
     "chart.js": "^4.4.5",
     "date-fns": "^4.1.0",
     "mapbox-gl": "^3.7.0",
